@@ -2,9 +2,7 @@ version: 2.1
 
 commands:
   destroy-environment:
-    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
-      # Add parameter here   
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.  
     steps:
       - run:
           name: Destroy environments
@@ -15,8 +13,7 @@ commands:
 
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    parameters:
-      # Add parameter here     
+   
     steps:
       - run:
           name: Revert migrations
@@ -67,39 +64,42 @@ jobs:
 
   test-frontend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - run:
+          name: Test
+          command: |
+             echo "test"
                 
   test-backend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - run:
+          name: Test
+          command: |
+             echo "test"
             
   scan-frontend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
+      - run:
+          name: Test
+          command: |
+             echo "test"
 
   scan-backend:
     docker:
-      # Docker image here
+      - image: circleci/node:13.8.0
     steps:
-      # Checkout code from git
-      # Restore from cache
-      # Your job code here
-
+      - run:
+          name: Test
+          command: |
+             echo "test"
   deploy-infrastructure:
     docker:
-      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
@@ -133,7 +133,7 @@ jobs:
 
   configure-infrastructure:
     docker:
-      # Docker image here that supports Ansible
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -152,7 +152,7 @@ jobs:
 
   run-migrations:
     docker:
-      # Docker image here that supports NodeJS
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
@@ -169,7 +169,7 @@ jobs:
 
   deploy-frontend:
     docker:
-      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
@@ -190,7 +190,7 @@ jobs:
                     
   deploy-backend:
     docker:
-      # Docker image here that supports Ansible
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       # Add ssh keys with fingerprint
@@ -207,7 +207,7 @@ jobs:
 
   smoke-test:
     docker:
-      # Lightweight Docker image 
+      - image: circleci/node:13.8.0 
     steps:
       # Checkout code from git
       - run:
@@ -230,7 +230,7 @@ jobs:
 
   cloudfront-update:
     docker:
-      # Docker image here that supports AWS CLI
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
       - run:
@@ -293,5 +293,4 @@ workflows:
           requires: [deploy-backend, deploy-frontend]
       - cloudfront-update:
           requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+ 
