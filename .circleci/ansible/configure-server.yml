@@ -11,10 +11,7 @@
       become: true
       raw: test -e /usr/bin/python3 || (apt -y update && apt install -y python3)
       changed_when: false
-      
-    - name: Installs nginx web server
-      apt: pkg=nginx state=installed update_cache=true
-
+     
     - name: add apt key for nodesource
       apt_key: url=https://deb.nodesource.com/gpgkey/nodesource.gpg.key
 
