@@ -27,9 +27,9 @@
       apt: name=nodejs
 
     - name: install NPM
-         shell: npm i
-         args:
-           chdir: /home/ubuntu
+      shell: npm i
+      args:
+        chdir: /home/ubuntu
 
     - name: Install PM2
       npm:
