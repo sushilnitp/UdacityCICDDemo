@@ -3,7 +3,7 @@
 - name: "configuration play." 
   hosts: web
   pre_tasks:
-    - name: "wait 60 seconds then move on"
+    - name: "wait 300 seconds then move on"
       wait_for:
         timeout: 300
   user: ubuntu
