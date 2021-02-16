@@ -100,7 +100,7 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm audit fix --audit-level=critical 
+            npm audit fix --audit-level=critical
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
@@ -114,7 +114,7 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical
-            
+                        
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -314,9 +314,9 @@ workflows:
       #- test-backend:
       #    requires: [build-backend]   
       - scan-backend:
-      #    requires: [build-backend]
+          requires: [build-backend]
       - scan-frontend:
-      #    requires: [build-frontend] 
+          requires: [build-frontend] 
       - deploy-infrastructure:
           requires: [build-frontend, build-backend]
       #     filters:
