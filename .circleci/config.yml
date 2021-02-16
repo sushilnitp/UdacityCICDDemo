@@ -213,6 +213,7 @@ jobs:
       - checkout
       - restore_cache:
           keys: backend-build-${CIRCLE_WORKFLOW_ID}
+      - run: cd backend && npm install          
       - run:
           name: Run migrations
           command: |
