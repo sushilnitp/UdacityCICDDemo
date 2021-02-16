@@ -6,6 +6,13 @@
   become: true
   tags: apt
   
+- name: Remove apt lock file
+  file:
+    state: absent
+    path: "/var/lib/dpkg/lock-frontend"
+  become: true
+  tags: apt
+  
 - name: "update apt packages."
   become: yes
   apt:
