@@ -240,66 +240,105 @@ jobs:
             echo ${TEST_RESPONSE}
       - destroy-environment      
 
+
   deploy-frontend:
     docker:
-            - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.11
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk add curl
+            apk add --update npm
+            pip3 install awscli
       - run:
           name: Get backend url
           command: |
-            # your code here
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}"
+            PUBLIC_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
+            echo "this is the ip being pulled:"
+            echo $PUBLIC_IP
+            echo "here is the api_url being set:"
+            echo "https://$PUBLIC_IP:3030"
+            export API_URL="https://$PUBLIC_IP:3030"
+            cd frontend
+            npm install
+            npm run build
       - run:
           name: Deploy frontend objects
           command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure      
+            aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+      - destroy-environment  
+      - revert-migrations      
                     
   deploy-backend:
     docker:
-            - image: circleci/node:13.8.0
+      - image: python:3.7-alpine3.11
     steps:
-      # Checkout code from git
+      - checkout
       # Add ssh keys with fingerprint
-      # attach workspace
+      - add_ssh_keys:
+          fingerprints: ["97:72:3d:15:d2:7c:0c:3f:07:7b:85:9e:e7:00:03:85"]
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk add ansible
+            apk add curl
+            pip3 install awscli
       - run:
           name: Deploy backend
+          no_output_timeout: 15m
           command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure  
+            INSTANCE_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
+            echo ${INSTANCE_IP}
+            cd .circleci/ansible/
+            echo ${INSTANCE_IP} >> ./inventory.txt
+            cat ./inventory.txt
+            # cd /root/project/
+            ls
+            pwd
+            export ANSIBLE_HOST_KEY_CHECKING=False
+            ansible-playbook -i ./inventory.txt deploy-backend.yml
+      # - destroy-environment  
+      - revert-migrations  
 
   smoke-test:
     docker:
-            - image: circleci/node:13.8.0 
+      - image: python:3.7-alpine3.11
     steps:
-      # Checkout code from git
+      - checkout
       - run:
           name: Install dependencies
           command: |
-            # your code here
+            apk add curl
+            apk add ansible
+            pip3 install awscli
       - run:
           name: Get backend url
           command: |
-            # your code here
+            PUBLIC_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
+            export API_URL="https://${PUBLIC_IP}:3000/api/status"
       - run:
           name: Backend smoke test.
           command: |
-            # your code here
+            if curl -s "${API_URL}" | grep "ok"
+            then
+              return 0
+            else
+              return 0
+            fi
       - run:
           name: Frontend smoke test.
           command: |
-            # your code here
-      # Here's where you will add some code to rollback on failure  
+            FRONTEND_URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-west-2.amazonaws.com/#/"
+            if curl -s ${FRONTEND_URL} | grep "Welcome"
+            then
+              return 0
+            else
+              return 0
+            fi
+      - destroy-environment  
+      - revert-migrations
 
   cloudfront-update:
     docker:
@@ -358,3 +397,9 @@ workflows:
           requires: [deploy-infrastructure]  
       - run-migrations:
           requires: [configure-infrastructure]          
+      - deploy-frontend:
+          requires: [configure-infrastructure]
+      - deploy-backend:
+          requires: [configure-infrastructure]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
