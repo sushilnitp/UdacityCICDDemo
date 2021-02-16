@@ -192,22 +192,40 @@ jobs:
             export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i ./inventory.txt configure-server.yml
       - destroy-environment 
+
   run-migrations:
     docker:
-            - image: circleci/node:13.8.0
+      - image: circleci/node:13.8.0
     steps:
       # Checkout code from git
+      - checkout
+      - restore_cache:
+          keys: backend-build-${CIRCLE_WORKFLOW_ID}
       - run:
           name: Run migrations
           command: |
-            # Your code here
-            exit 1
+            echo printenv
+            printenv >> ./backend/.env
+            cd backend
+            npm run migrations > migrationOutput.txt
+            cat migrationOutput.txt
+          no_output_timeout: 15m
       - run:
           name: Send migration results to memstash
           command: |
-            # Your code here
-            exit 1
-     # Here's where you will add some code to rollback on failure      
+            cd backend
+            echo grep -c "No migrations are pending" migrationOutput.txt
+            MIGRATION_RESULT=`grep -c "No migrations are pending" migrationOutput.txt`
+            echo $MIGRATION_RESULT
+            curl -H "Content-Type: text/plain" \
+               -H "token: ${CIRCLE_WORKFLOW_ID}" \
+               --request PUT \
+               --data ${MIGRATION_RESULT} \
+               https://api.memstash.io/values/migration_result
+            TEST_RESPONSE=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/migration_result)
+            echo "test memstash result"
+            echo ${TEST_RESPONSE}
+      - destroy-environment      
 
   deploy-frontend:
     docker:
@@ -324,4 +342,6 @@ workflows:
       #       branches:
       #         only: [test-feature-branch]
       - configure-infrastructure:
+          requires: [deploy-infrastructure]  
+      - run-migrations:
           requires: [deploy-infrastructure]          
