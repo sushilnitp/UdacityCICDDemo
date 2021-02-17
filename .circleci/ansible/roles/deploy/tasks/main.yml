@@ -35,11 +35,11 @@
 #  become: true
 #  command: npm install -g npm
 
-- name: "NPM install"
+#- name: "NPM install"
   # become: true
-  command: npm install
-  args:
-    chdir: /home/ubuntu
+#  command: npm install
+#  args:
+#    chdir: /home/ubuntu
 
 - name: "NPM Run Build"
   # become: true
