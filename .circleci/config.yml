@@ -287,7 +287,7 @@ jobs:
             pip3 install awscli
       - run:
           name: Deploy backend
-          no_output_timeout: 15m
+          no_output_timeout: 20m
           command: |
             INSTANCE_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
             echo ${INSTANCE_IP}
