@@ -326,7 +326,7 @@ jobs:
             then
               return 0
             else
-              return 0
+              return 1
             fi
       - run:
           name: Frontend smoke test.
@@ -336,7 +336,7 @@ jobs:
             then
               return 0
             else
-              return 0
+              return 1
             fi
  #     - destroy-environment  
  #    - revert-migrations
@@ -350,7 +350,7 @@ jobs:
           name: Update cloudfront distribution
           command: |
             # your code here
-            OldWorkflowId=$(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
+            OldWorkflowId=$(aws cloudformation list-exports --query "Exports[?Name=='${CIRCLE_WORKFLOW_ID}'].Value" --output text)
             STACKS=$(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --output text)
             echo OldWorkflowId: ${OldWorkflowId}
             echo STACKS: ${STACKS}
