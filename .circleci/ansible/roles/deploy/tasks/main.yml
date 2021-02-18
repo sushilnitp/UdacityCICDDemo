@@ -63,9 +63,11 @@
 #   become: true
 #   command: cd /home/ubuntu/backend    
 
-- name: "run npm install"
+- name: "install npm packages"
   become: true
   command: npm install
+  args:
+    chdir: /home/ubuntu/backend
     
 - name: "run npm run build"
   become: true
