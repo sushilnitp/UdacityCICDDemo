@@ -14,17 +14,14 @@
     name: ["nodejs", "npm"]
     update_cache: yes
 
+    
 - name: "Get project/backend files from circleci server to local"
   become: true
   copy:
     src: ~/project/backend/
-    dest: /home/ubuntu
+    dest: /home/ubuntu/backend/
 
-# - name: "CD to dir"
-#   become: true
-#   command: ls
-#   args: 
-#     chdir: /home/ubuntu/backend
+
 
 # - name: "LS backend"
 #   become: true
