@@ -62,9 +62,15 @@
 
 - name: "install npm packages"
   become: true
-  command: npm install
+  command: npm install -g n
   args:
     chdir: /home/ubuntu/backend
+    
+- name: "stable npm packages"
+  become: true
+  command: n stable
+  args:
+    chdir: /home/ubuntu/backend    
     
 - name: "run npm run build"
   become: true
