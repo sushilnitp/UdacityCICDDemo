@@ -334,7 +334,7 @@ jobs:
           command: |
             if curl -s "${API_URL}" | grep "ok"
             then
-              return 0
+              return 1
             else
               return 1
             fi
