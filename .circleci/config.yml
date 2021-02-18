@@ -352,7 +352,7 @@ jobs:
           name: Update cloudfront distribution
           command: |
             # your code here
-            OldWorkflowId=$(aws cloudformation list-exports --query "Exports[?Name=='${CIRCLE_WORKFLOW_ID}'].Value" --output text)
+            OldWorkflowId=$(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
             STACKS=$(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --output text)
             echo OldWorkflowId: ${OldWorkflowId}
             echo STACKS: ${STACKS}
@@ -361,7 +361,7 @@ jobs:
               --stack-name circleci-stack \
               --template-file .circleci/files/cloudfront.yml \
               --region ${AWS_DEFAULT_REGION} \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID}"
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
             echo Delete old stacks/resources
             if [[ "${STACKS[@]}" =~ "${OldWorkflowId}" ]]
             then
