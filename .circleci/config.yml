@@ -11,7 +11,7 @@ commands:
           when: on_fail
           command: |
             # Delete files from bucket
-            #aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
             # Delete front end stack
             aws cloudformation delete-stack --stack-name udacity-frontend-${CIRCLE_WORKFLOW_ID}
             # Delete back end stack
@@ -320,15 +320,6 @@ jobs:
             PUBLIC_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
             export API_URL="https://${PUBLIC_IP}:3000/api/status"
       - run:
-          name: Backend smoke test.
-          command: |
-            if curl -s "${API_URL}" | grep "ok"
-            then
-              return 0
-            else
-              return 1
-            fi
-      - run:
           name: Frontend smoke test.
           command: |
             FRONTEND_URL="http://udapeople-${CIRCLE_WORKFLOW_ID}.s3-website.us-west-2.amazonaws.com/#/"
@@ -337,8 +328,19 @@ jobs:
               return 0
             else
               return 1
+            fi            
+      - run:
+          name: Backend smoke test.
+          command: |
+            if curl -s "${API_URL}" | grep "ok"
+            then
+              return 0
+            else
+              return 1
             fi
- #     - destroy-environment  
+
+      - destroy-environment      
+
  #    - revert-migrations
 
   cloudfront-update:
@@ -370,7 +372,7 @@ jobs:
               # Delete back end stack
               aws cloudformation delete-stack --stack-name udacity-backend-${OldWorkflowId}
             fi
- #     - destroy-environment  
+      - destroy-environment      
  #     - revert-migrations
 
 
