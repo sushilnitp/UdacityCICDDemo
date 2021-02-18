@@ -63,13 +63,13 @@
 #   become: true
 #   command: cd /home/ubuntu/backend    
 
-# - name: "run npm install"
-#   become: true
-#   command: npm install
+- name: "run npm install"
+  become: true
+  command: npm install
     
-# - name: "run npm run build"
-#   become: true
-#   command: npm run build
+- name: "run npm run build"
+  become: true
+  command: npm build
 
 - name: "PM2 to run back-end server"
   become: true
