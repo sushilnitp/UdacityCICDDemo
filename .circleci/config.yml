@@ -375,7 +375,7 @@ jobs:
               # Delete back end stack
               aws cloudformation delete-stack --stack-name udacity-backend-${OldWorkflowId}
             fi
- #     - destroy-environment      
+      - destroy-environment      
  #     - revert-migrations
 
 
