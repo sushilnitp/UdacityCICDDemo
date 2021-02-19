@@ -54,8 +54,8 @@
 #   become: true
 #   copy:
 #     src: ~/project/backend/dist
-#     dest: /home/ubuntu/backend/00
-.+
+#     dest: /home/ubuntu/backend/
+
 # - name: "cd to backend dir"
 #   become: true
 #   command: cd /home/ubuntu/backend    
