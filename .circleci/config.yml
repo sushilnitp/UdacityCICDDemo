@@ -355,6 +355,7 @@ jobs:
             OldWorkflowId=$(aws cloudformation list-exports --query "Exports[?Name=='WorkflowID'].Value" --output text)
             STACKS=$(aws cloudformation list-stacks --query "StackSummaries[*].StackName" --stack-status-filter CREATE_COMPLETE --output text)
             echo OldWorkflowId: ${OldWorkflowId}
+            echo Test 2
             echo STACKS: ${STACKS}
             echo Update CloudFront
             aws cloudformation deploy \
@@ -362,7 +363,7 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --region ${AWS_DEFAULT_REGION} \
               --tags Name=udacity-prod \
-              --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
+              --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
               
             echo Delete old stacks/resources
             if [[ "${STACKS[@]}" =~ "${OldWorkflowId}" ]]
@@ -374,7 +375,7 @@ jobs:
               # Delete back end stack
               aws cloudformation delete-stack --stack-name udacity-backend-${OldWorkflowId}
             fi
-      - destroy-environment      
+ #     - destroy-environment      
  #     - revert-migrations
 
 
