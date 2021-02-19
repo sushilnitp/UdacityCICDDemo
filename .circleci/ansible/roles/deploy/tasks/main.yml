@@ -72,6 +72,12 @@
   args:
     chdir: /home/ubuntu/backend    
     
+- name: "install npm "
+  become: true
+  command: npm install
+  args:
+    chdir: /home/ubuntu/backend
+    
 - name: "run npm run build"
   become: true
   command: npm build
