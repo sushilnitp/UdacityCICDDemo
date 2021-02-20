@@ -72,6 +72,8 @@ jobs:
             cd backend
             rm -rf node_modules/
             npm install
+            sudo npm i --save-dev standard-version
+            sudo npm i semver
             npm run build
       - save_cache:
           paths: [backend/node_modules]
@@ -86,6 +88,9 @@ jobs:
           command: |
             cd frontend
             npm install
+            sudo npm i --save-dev standard-version
+            sudo npm install oauth-sign
+            sudo npm i semver
             npm run test
                 
   test-backend:
@@ -416,9 +421,9 @@ workflows:
       #    requires: [build-frontend] 
       - deploy-infrastructure:
           requires: [build-frontend, build-backend]
-      #     filters:
-      #       branches:
-      #         only: [test-feature-branch]
+           filters:
+             branches:
+               only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]  
       #- run-migrations:
