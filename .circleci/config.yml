@@ -363,9 +363,19 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --region ${AWS_DEFAULT_REGION} \
               --tags Name=udacity-prod \
-              --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID}
+              --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
               
-
+            echo Delete old stacks/resources            
+            if [[ "${STACKS[@]}" = "${OldWorkflowId}" ]]
+            then
+              # Delete files from bucket
+              echo Delete old stacks/resources ${OldWorkflowId}
+              aws s3 rm s3://udapeople-${OldWorkflowId}/ --recursive
+              # Delete front end stack
+              aws cloudformation delete-stack --stack-name udacity-frontend-${OldWorkflowId}
+              # Delete back end stack
+              aws cloudformation delete-stack --stack-name udacity-backend-${OldWorkflowId}
+            fi
       - destroy-environment      
  #     - revert-migrations
 
@@ -396,19 +406,19 @@ workflows:
     jobs:
       - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]   
+     # - test-frontend:
+      #    requires: [build-frontend]
+      #- test-backend:
+      #    requires: [build-backend]   
       - scan-backend:
          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend] 
+      #- scan-frontend:
+      #    requires: [build-frontend] 
       - deploy-infrastructure:
           requires: [build-frontend, build-backend]
-          filters:
-            branches:
-              only: test-brabch
+      #     filters:
+      #       branches:
+      #         only: [test-feature-branch]
       - configure-infrastructure:
           requires: [deploy-infrastructure]  
       #- run-migrations:
