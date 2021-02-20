@@ -91,7 +91,6 @@ jobs:
             sudo npm i --save-dev standard-version
             sudo npm install oauth-sign
             sudo npm i semver
-            npm run test
                 
   test-backend:
     docker:
@@ -421,9 +420,9 @@ workflows:
       #    requires: [build-frontend] 
       - deploy-infrastructure:
           requires: [build-frontend, build-backend]
-           filters:
-             branches:
-               only: [master]
+      #     filters:
+       #      branches:
+      #         only: [master]
       - configure-infrastructure:
           requires: [deploy-infrastructure]  
       #- run-migrations:
