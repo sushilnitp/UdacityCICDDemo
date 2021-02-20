@@ -363,7 +363,7 @@ jobs:
               --template-file .circleci/files/cloudfront.yml \
               --region ${AWS_DEFAULT_REGION} \
               --tags Name=udacity-prod \
-              --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7}
+              --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID}
               
             echo Delete old stacks/resources            
             if [[ "${STACKS[@]}" =~ "${OldWorkflowId}" ]]
