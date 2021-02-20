@@ -406,9 +406,9 @@ workflows:
           requires: [build-frontend] 
       - deploy-infrastructure:
           requires: [build-frontend, build-backend]
-            filters:
-              branches:
-                only: [test-feature-branch]
+          filters:
+            branches:
+              only: test-brabch
       - configure-infrastructure:
           requires: [deploy-infrastructure]  
       #- run-migrations:
