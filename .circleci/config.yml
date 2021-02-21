@@ -161,7 +161,7 @@ jobs:
           name: Add back-end ip to ansible inventory, this time use memstash
           command: |
             INSTANCE_IP=$(aws ec2 describe-instances \
-            --filters 'Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID}' \
+            --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID} \
             --query "Reservations[*].Instances[*].PublicIpAddress" \
             --output text)
             echo ${INSTANCE_IP}
