@@ -264,8 +264,8 @@ jobs:
             echo "this is the ip being pulled:"
             echo $PUBLIC_IP
             echo "here is the api_url being set:"
-            echo "https://$PUBLIC_IP:3030"
-            export API_URL="https://$PUBLIC_IP:3030"
+            echo "http://$PUBLIC_IP:3030"
+            export API_URL="http://$PUBLIC_IP:3030"
             cd frontend
             npm install
             npm run build
@@ -333,7 +333,7 @@ jobs:
           name: Get backend url
           command: |
             PUBLIC_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
-            export API_URL="https://${PUBLIC_IP}:3030/api/status"
+            export API_URL="http://${PUBLIC_IP}:3030/api/status"
       - run:
           name: Frontend smoke test.
           command: |
@@ -380,7 +380,17 @@ jobs:
               --tags Name=udacity-prod \
               --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID}
               
-
+            echo Delete old stacks/resources            
+            if [[ "${STACKS[@]}" =~ "${OldWorkflowId}" ]]
+            then
+              # Delete files from bucket
+              echo Delete old stacks/resources ${OldWorkflowId}
+              aws s3 rm s3://udapeople-${OldWorkflowId}/ --recursive
+              # Delete front end stack
+              aws cloudformation delete-stack --stack-name udacity-frontend-${OldWorkflowId}
+              # Delete back end stack
+              aws cloudformation delete-stack --stack-name udacity-backend-${OldWorkflowId}
+            fi
       - destroy-environment      
  #     - revert-migrations
 
