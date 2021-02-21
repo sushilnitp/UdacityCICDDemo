@@ -55,13 +55,13 @@
     
 - name: "install npm "
   become: true
-  command: npm install
+  command: n 13.8
   args:
     chdir: /home/ubuntu/backend
     
 - name: "run npm run build"
   become: true
-  command: npm build
+  command: npm run build
 
 - name: "PM2 to run back-end server"
   become: true
