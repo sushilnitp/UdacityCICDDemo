@@ -61,7 +61,7 @@
     
 - name: "run npm run build"
   become: true
-  command: npm run build
+  command: npm build
 
 - name: "PM2 to run back-end server"
   become: true
