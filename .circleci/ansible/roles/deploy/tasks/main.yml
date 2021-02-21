@@ -55,7 +55,7 @@
     
 - name: "install npm "
   become: true
-  command: n 13.8
+  command: npm install
   args:
     chdir: /home/ubuntu/backend
     
